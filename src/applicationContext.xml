@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <!-- 可以写多个 -->
+    <context:component-scan base-package="com.how2java.*"/>
+
+    <!--<bean name="cate" class="com.how2java.pojo.Category">
+        <property name="name" value="123"/>
+    </bean>
+
+    <bean name="product" class="com.how2java.pojo.Product">
+        <property name="name" value="电脑"/>
+        <property name="category" ref="cate"/>
+    </bean>-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+    <aop:config>
+        <!-- 写两个点可以匹配子项 -->
+        <aop:pointcut id="loggerPointCut" expression="execution(* com.how2java..*.impl.*Impl.*(..))"/>
+        <aop:aspect id="logAspect" ref="loggerAspect" order="2">
+            <aop:around method="log" pointcut-ref="loggerPointCut"/>
+        </aop:aspect>
+    </aop:config>
+
+    <aop:config>
+        <aop:pointcut id="pointcut" expression="execution(* com.how2java..*.impl.*Impl.*(..))"/>
+        <!-- order 两个拦截器都执行，只不过先后顺序按照order规定的来 -->
+        <aop:advisor advice-ref="springApiAspect" pointcut-ref="pointcut" order="1"/>
+    </aop:config>
+
+</beans>
